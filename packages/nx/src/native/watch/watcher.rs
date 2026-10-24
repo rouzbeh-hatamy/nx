@@ -447,12 +447,15 @@ impl Watcher {
             .map(|p| (*p).to_string())
             .collect();
 
-        // Vite/Vitest write timestamp files that we don't want to watch.
+        // Vite, Vitest and pnpm write short-lived files that we don't want to watch.
+        // pnpm 12 writes `_tmp_<pid>_<hex>` on every command while it probes
+        // where to put its store.
         globs.extend([
             "vitest.config.ts.timestamp*.mjs".into(),
             "vite.config.ts.timestamp*.mjs".into(),
             "vitest.config.mts.timestamp*.mjs".into(),
             "vite.config.mts.timestamp*.mjs".into(),
+            "_tmp_*_*".into(),
         ]);
 
         if let Some(additional_globs) = additional_globs {
